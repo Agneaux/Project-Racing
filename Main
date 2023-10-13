@@ -1,0 +1,85 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 13 14:26:22 2023
+
+@author: yvalles
+"""
+
+from tkinter import *
+from random import randrange
+
+# Class pour les points remarquables du circuit :
+class Point:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+    
+    def Deplacement(self,p2):
+        self.x = self.x + p2.x
+        self.y = self.y + p2.y
+        
+    def Agrandissement(self,a):
+        self.x = a*self.x
+        self.y = a*self.y
+
+    def Trace(self,p2):
+        can1.create_line(self.x,self.y,p2.x,p2.y,width=5,fill='red')
+        
+    def __str__(self):
+            return str('(')+str(self.x) + str(',') + str(self.y)+str(')')
+
+
+# --- définition des fonctions gestionnaires d'événements : ---
+def parcours():
+    "Définit le parcours dans le canevas can1"
+    Points_Remarquables=[Point(0,0),Point(4,14),Point(6,12),Point(31,24),Point(25,14),Point(18,11),Point(15,8),Point(16,-2),Point(7,0),Point(10,-3),Point(14,-5),Point(12,-8)]
+    #Centrage des points et normalisation pour affichage :
+    for i in range(len(Points_Remarquables)):
+        Points_Remarquables[i].Agrandissement(15)
+        Points_Remarquables[i].Deplacement(Point(100,150))
+    #Tracage des points :
+    for i in range(len(Points_Remarquables)-1):
+        Points_Remarquables[i].Trace(Points_Remarquables[i+1])
+    Points_Remarquables[len(Points_Remarquables)-1].Trace(Points_Remarquables[0])
+    
+def changecolor():
+    "Changement aléatoire de la couleur du tracé"
+    global coul
+    pal=['purple','cyan','maroon','green','red','blue','orange','yellow']
+    c = randrange(8)         # => génère un nombre aléatoire de 0 à 7
+    coul = pal[c]
+
+#------ Programme principal -------
+
+# les variables suivantes seront utilisées de manière globale :
+x1, y1, x2, y2 = 10, 190, 190, 10      # coordonnées de la ligne
+coul = 'dark green'                    # couleur de la ligne
+
+# Création du widget principal ("maître") :
+fen1 = Tk()
+# création des widgets "esclaves" fenêtre de vision :
+can1 = Canvas(fen1,bg='dark gray',height=600,width=600)
+can1.pack(side=LEFT)
+
+
+bou1 = Button(fen1,text='Quitter',command=fen1.quit)
+bou1.pack(side=BOTTOM)
+bou2 = Button(fen1,text='Lancer la simulation',command=parcours())
+bou2.pack()
+bou3 = Button(fen1,text='Autre couleur',command=changecolor)
+bou3.pack()
+
+fen1.mainloop()		# démarrage du réceptionnaire d'événements
+
+fen1.destroy()		# destruction (fermeture) de la fenêtre
+
+"""
+#Tests
+P0=Point(0,0)
+print(P0)
+Points_Remarquables=[Point(0,0),Point(4,14),Point(6,12),Point(31,24),Point(25,14),Point(18,11),Point(15,8),Point(16,-2),Point(7,0),Point(10,-3),Point(14,-5),Point(12,-8)]
+print(Points_Remarquables)
+P2=Point(0,0)
+P2.Deplacement(Point(300,300))
+print(P2)
+"""
